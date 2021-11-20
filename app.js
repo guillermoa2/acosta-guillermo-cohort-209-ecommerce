@@ -1,6 +1,7 @@
 const express = require('express');
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
 const dotenv = require('dotenv');
+const bcrypt = require('bcrypt');
 
 dotenv.config({path: './.env'});
 
@@ -15,13 +16,14 @@ const config = {
 }
 
 const app = express();
+app.use(express.json());
 
 app.use( async(req, res, next) => {
     try {
-        global.connection = await mysql.createConnection(config);
+        global.db = await mysql.createConnection(config);
         
 
-        // global.connection.connect();
+        // global.db.connect();
 
         // connection.query(`
         //     SHOW DATABASES;
@@ -33,7 +35,7 @@ app.use( async(req, res, next) => {
 
         console.log('Connected to database!');
 
-        // connection.end()
+        // connection.db()
 
         await next();
     } catch (err) {
@@ -45,6 +47,19 @@ app.use( async(req, res, next) => {
 app.get('/', (req, res) => {
     res.send('Hello world!');
 });
+
+app.post('/user/register', async (req, res) => {
+    console.log(req.body);
+
+    const saltRounds = 10;
+    const encryptedPassword = await bcrypt.hash(req.body.password, saltRounds);
+
+    console.log('hashed', encryptedPassword);
+
+
+
+    res.status(200).json({message:`User ${req.body.email} created!`});
+})
 
 app.listen(port, () => {
     console.log(`App listening at http://localhost:${port}`)

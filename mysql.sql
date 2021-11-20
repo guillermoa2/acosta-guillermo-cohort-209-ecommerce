@@ -1,4 +1,3 @@
-USE ecommerce_api_prj;
 
 CREATE table user (
 	id int NOT null auto_increment primary key,
@@ -37,7 +36,7 @@ CREATE TABLE category (
 --     foreign key (brand_id) references brand (id)
 -- );
 
-
-DROP TABLE ecommerce_api_prj.user;
-
-    SELECT * FROM user;
+SELECT * FROM user;
+SELECT * FROM brand;
+SELECT * FROM category;
+SELECT * FROM product;
