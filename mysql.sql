@@ -5,6 +5,7 @@ CREATE table user (
     email varchar(50) not null unique,
     password varchar(255) not null
 );
+-- change password to type blob after register and login user are done;
 
 CREATE TABLE product (
 	id int NOT null AUTO_INCREMENT primary key,
