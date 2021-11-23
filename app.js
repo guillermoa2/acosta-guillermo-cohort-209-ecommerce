@@ -51,25 +51,33 @@ app.get('/', (req, res) => {
 });
 
 app.post('/user/register', async (req, res) => {
-    console.log('req.body',req.body);
-
-    const saltRounds = 10;
-    const encryptedPassword = await bcrypt.hash(req.body.password, saltRounds);
-
-    console.log('hashed', encryptedPassword);
-
-    const [user] = await global.db.query(`
-        INSERT INTO user (name, email, password)
-        VALUES (:name, :email, :password )
-    `, {
-        name: req.body.name,
-        email: req.body.email,
-        password: encryptedPassword
-    });
-
-    console.log('user',user);
-
-    res.status(200).json({message:`User ${req.body.email} created!`});
+    try {
+        console.log('req.body',req.body);
+    
+        const saltRounds = 10;
+        const encryptedPassword = await bcrypt.hash(req.body.password, saltRounds);
+    
+        console.log('hashed', encryptedPassword);
+    
+        const [user] = await global.db.query(`
+            INSERT INTO user (name, email, password)
+            VALUES (:name, :email, :password )
+        `, {
+            name: req.body.name,
+            email: req.body.email,
+            password: encryptedPassword
+        });
+    
+        console.log('user',user);
+    
+        res.status(200).json({message:`User ${req.body.email} created!`});
+    } catch (err) {
+        console.log(err);
+        res.status(500).json(
+            {
+                message: err.message
+            });
+    }
 })
 
 app.listen(port, () => {
